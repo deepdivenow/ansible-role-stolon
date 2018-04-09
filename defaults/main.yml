@@ -1,0 +1,20 @@
+stolon_version: 0.10.0
+stolon_unarchive_prefix: /usr/stolon
+stolonctl_version_target: stolonctl version v0.10.0
+stolon_store_backend: etcdv3
+stolon_store_endpoints: http://{{ inventory_hostname }}:2379
+stolon_cluster_name: pg-stolon
+#etcd_cluster_group_name: etcd
+stolon_sentinel_user: stolon
+stolon_pgpassfile: /home/{{ stolon_sentinel_user }}/stolon_pgpassfile
+stolon_remoteinstanceport: 5432
+stolon_proxy_listen: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+stolon_proxy_port: 25432
+stolon_postgres_listen: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+stolon_postgres_port: 5432
+stolon_replication_user: postgres
+stolon_repl_passwordfile: "{{ stolon_pgpassfile }}"
+stolon_su_passwordfile: "{{ stolon_pgpassfile }}"
+postgresql_version: 9.5
+
+

@@ -1,0 +1,26 @@
+[Unit]
+Description=stolon-proxy
+ 
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+LimitNOFILE=40000
+TimeoutStartSec=0
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
+User=postgres
+
+ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-keeper \
+          --cluster-name {{ stolon_cluster_name }} \
+          --store-backend={{ stolon_store_backend }} \
+          --store-endpoints={{ stolon_store_endpoints }} \
+          --uid=pg{{ inventory_hostname }} \
+          --data-dir=/var/lib/pgsql/{{ postgresql_version }} \
+          --pg-listen-address={{ stolon_postgres_listen }} \
+          --pg-repl-username={{ stolon_replication_user }} \
+          --pg-repl-passwordfile={{ stolon_repl_passwordfile }} \
+          --pg-su-passwordfile={{ stolon_su_passwordfile }}
+
+[Install]
+WantedBy=multi-user.target
+

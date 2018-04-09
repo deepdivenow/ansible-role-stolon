@@ -1,0 +1,14 @@
+- name: restart stolon-proxy
+  service:
+    name: stolon-proxy
+    state: restarted
+
+- name: restart stolon-sentinel
+  service:
+    name: stolon-sentinel
+    state: restarted
+
+- name: restart stolon-keeper
+  service:
+    name: stolon-keeper
+    state: restarted

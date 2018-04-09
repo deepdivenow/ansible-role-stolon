@@ -1,0 +1,107 @@
+#- name: install go
+#  include_role:
+#    name: go-download
+
+- name: Register the current Stolon version (if any)
+  command: /usr/stolon/bin/stolonctl --version
+  ignore_errors: yes
+  register: stolon_version_check
+  changed_when: false
+
+- block: 
+    - name: download stolon
+      get_url: 
+        url: "https://github.com/sorintlab/stolon/releases/download/v{{ stolon_version }}/stolon-v{{ stolon_version }}-linux-amd64.tar.gz" 
+        dest: /tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz
+
+    - name: Remove old installation of Stolon
+      file:
+        path: "{{ stolon_unarchive_prefix }}"
+        state: absent
+
+    - name: Check work dir | {{ stolon_unarchive_prefix }}
+      file:
+        path: "{{ stolon_unarchive_prefix }}"
+        state: directory
+        mode: 755
+
+    - name: unpack stolon
+      unarchive: 
+        copy: no 
+        src: "/tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz" 
+        dest: "{{ stolon_unarchive_prefix }}"
+        extra_opts: "--strip-components=1"
+
+    - name: Remove archive
+      file:
+        path: "/tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz"
+        state: absent
+
+  when: stolon_version_check is failed or stolon_version_check.stdout != stolonctl_version_target
+
+- name: Create stolon-sentinel user
+  user:
+      name: "{{ stolon_sentinel_user }}"
+      home: "/home/{{ stolon_sentinel_user }}"
+      state: present
+      group: postgres
+
+- name: Change user dir permissions
+  file: 
+      path: "/home/{{ stolon_sentinel_user }}"
+      state: directory
+      mode: 0750
+      group: postgres
+
+- name: Create pass file
+  template: 
+      src: pass.j2
+      dest: "{{ stolon_pgpassfile }}"
+      mode: 0440
+      group: postgres
+
+- name: Create stolon-sentinel service file
+  template: 
+      src: stolon-sentinel.service.j2
+      dest: /etc/systemd/system/stolon-sentinel.service
+      mode: 0444
+  notify: restart stolon-sentinel
+
+
+- name: Systemd | stolon-sentinel
+  systemd:
+      daemon_reload: yes
+      enabled: yes
+      state: started
+      name: stolon-sentinel
+
+- name: Create stolon-proxy service file
+  template: 
+      src: stolon-proxy.service.j2
+      dest: /etc/systemd/system/stolon-proxy.service
+      mode: 0444
+  notify: restart stolon-proxy
+
+- name: Systemd | stolon-proxy
+  systemd:
+      daemon_reload: yes
+      enabled: yes
+      state: started
+      name: stolon-proxy
+
+- name: Create stolon-keeper service file
+  template: 
+      src: stolon-keeper.service.j2
+      dest: /etc/systemd/system/stolon-keeper.service
+      mode: 0444
+  notify: restart stolon-keeper
+
+- name: Systemd | stolon-keeper
+  systemd:
+      name: stolon-keeper
+      daemon_reload: yes
+      enabled: yes
+      state: started
+
+
+

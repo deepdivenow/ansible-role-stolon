@@ -1,0 +1,18 @@
+[Unit]
+Description=stolon-sentinel
+ 
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+LimitNOFILE=40000
+TimeoutStartSec=0
+User={{ stolon_sentinel_user }}
+
+ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-sentinel --cluster-name={{ stolon_cluster_name }} \
+          --store-backend={{ stolon_store_backend }} \
+          --store-endpoints={{ stolon_store_endpoints }}
+ 
+[Install]
+WantedBy=multi-user.target
+
