@@ -7,11 +7,12 @@ Restart=always
 RestartSec=5s
 LimitNOFILE=40000
 TimeoutStartSec=0
+Environment="STSENTINEL_CLUSTER_NAME={{ stolon_cluster_name }}"
+Environment="STSENTINEL_STORE_BACKEND={{ stolon_store_backend }}"
+Environment="STSENTINEL_STORE_ENDPOINTS={{ stolon_store_endpoints }}"
 User={{ stolon_sentinel_user }}
 
-ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-sentinel --cluster-name={{ stolon_cluster_name }} \
-          --store-backend={{ stolon_store_backend }} \
-          --store-endpoints={{ stolon_store_endpoints }}
+ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-sentinel 
  
 [Install]
 WantedBy=multi-user.target

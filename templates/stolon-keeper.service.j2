@@ -8,18 +8,18 @@ RestartSec=5s
 LimitNOFILE=40000
 TimeoutStartSec=0
 Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
+Environment="STKEEPER_CLUSTER_NAME={{ stolon_cluster_name }}"
+Environment="STKEEPER_STORE_BACKEND={{ stolon_store_backend }}"
+Environment="STKEEPER_STORE_ENDPOINTS={{ stolon_store_endpoints }}"
+Environment="STKEEPER_UID=pg{{ inventory_hostname.split('.')[0] }}" #Take shortname
+Environment="STKEEPER_DATA_DIR=/var/lib/pgsql/{{ postgresql_version }}"
+Environment="STKEEPER_PG_LISTEN_ADDRESS={{ stolon_postgres_listen }}"
+Environment="STKEEPER_PG_REPL_USERNAME={{ stolon_replication_user }}"
+Environment="STKEEPER_PG_REPL_PASSWORDFILE={{ stolon_repl_passwordfile }}"
+Environment="STKEEPER_PG_SU_PASSWORDFILE={{ stolon_su_passwordfile }}"
 User=postgres
 
-ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-keeper \
-          --cluster-name {{ stolon_cluster_name }} \
-          --store-backend={{ stolon_store_backend }} \
-          --store-endpoints={{ stolon_store_endpoints }} \
-          --uid=pg{{ inventory_hostname }} \
-          --data-dir=/var/lib/pgsql/{{ postgresql_version }} \
-          --pg-listen-address={{ stolon_postgres_listen }} \
-          --pg-repl-username={{ stolon_replication_user }} \
-          --pg-repl-passwordfile={{ stolon_repl_passwordfile }} \
-          --pg-su-passwordfile={{ stolon_su_passwordfile }}
+ExecStart={{ stolon_unarchive_prefix }}/bin/stolon-keeper
 
 [Install]
 WantedBy=multi-user.target
