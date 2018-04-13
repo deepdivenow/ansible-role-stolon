@@ -17,4 +17,12 @@ stolon_repl_passwordfile: "{{ stolon_pgpassfile }}"
 stolon_su_passwordfile: "{{ stolon_pgpassfile }}"
 postgresql_version: 9.5
 
+## Very DANGEROUS option
+### May ERASE all postgres data
+# stolon_init_mode: new or existing
+# stolon_init_uid: existing data souce
+stolon_init: false
+stolon_init_mode: existing
+stolon_init_uid: "{{ ansible_play_hosts[0] }}"
+
 

@@ -1,0 +1,44 @@
+
+- name: Create stolon-sentinel service file
+  template: 
+      src: stolon-sentinel.service.j2
+      dest: /etc/systemd/system/stolon-sentinel.service
+      mode: 0444
+  notify: restart stolon-sentinel
+
+- name: Systemd | stolon-sentinel
+  systemd:
+      daemon_reload: yes
+      enabled: yes
+      state: started
+      name: stolon-sentinel
+
+- name: Create stolon-proxy service file
+  template: 
+      src: stolon-proxy.service.j2
+      dest: /etc/systemd/system/stolon-proxy.service
+      mode: 0444
+  notify: restart stolon-proxy
+
+- name: Systemd | stolon-proxy
+  systemd:
+      daemon_reload: yes
+      enabled: yes
+      state: started
+      name: stolon-proxy
+
+- name: Create stolon-keeper service file
+  template: 
+      src: stolon-keeper.service.j2
+      dest: /etc/systemd/system/stolon-keeper.service
+      mode: 0444
+  notify: restart stolon-keeper
+
+- name: Systemd | stolon-keeper
+  systemd:
+      name: stolon-keeper
+      daemon_reload: yes
+      enabled: yes
+      state: started
+
+- meta: flush_handlers

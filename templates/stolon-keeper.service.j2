@@ -14,6 +14,7 @@ Environment="STKEEPER_STORE_ENDPOINTS={{ stolon_store_endpoints }}"
 Environment="STKEEPER_UID=pg{{ inventory_hostname.split('.')[0] }}" #Take shortname
 Environment="STKEEPER_DATA_DIR=/var/lib/pgsql/{{ postgresql_version }}"
 Environment="STKEEPER_PG_LISTEN_ADDRESS={{ stolon_postgres_listen }}"
+Environment="STKEEPER_PG_PORT={{ stolon_postgres_port }}"
 Environment="STKEEPER_PG_REPL_USERNAME={{ stolon_replication_user }}"
 Environment="STKEEPER_PG_REPL_PASSWORDFILE={{ stolon_repl_passwordfile }}"
 Environment="STKEEPER_PG_SU_PASSWORDFILE={{ stolon_su_passwordfile }}"

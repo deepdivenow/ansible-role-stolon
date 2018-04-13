@@ -1,0 +1,39 @@
+
+- name: Register the current Stolon version (if any)
+  command: /usr/stolon/bin/stolonctl --version
+  ignore_errors: yes
+  register: stolon_version_check
+  changed_when: false
+
+- block: 
+    - name: download stolon
+      get_url: 
+        url: "https://github.com/sorintlab/stolon/releases/download/v{{ stolon_version }}/stolon-v{{ stolon_version }}-linux-amd64.tar.gz" 
+        dest: /tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz
+
+    - name: Remove old installation of Stolon
+      file:
+        path: "{{ stolon_unarchive_prefix }}"
+        state: absent
+
+    - name: Check work dir | {{ stolon_unarchive_prefix }}
+      file:
+        path: "{{ stolon_unarchive_prefix }}"
+        state: directory
+        mode: 755
+
+    - name: unpack stolon
+      unarchive: 
+        copy: no 
+        src: "/tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz" 
+        dest: "{{ stolon_unarchive_prefix }}"
+        extra_opts: "--strip-components=1"
+
+    - name: Remove archive
+      file:
+        path: "/tmp/stolon-v{{ stolon_version }}-linux-amd64.tar.gz"
+        state: absent
+
+  when: stolon_version_check is failed or stolon_version_check.stdout != stolonctl_version_target
+
+

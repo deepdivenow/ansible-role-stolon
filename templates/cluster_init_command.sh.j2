@@ -1,0 +1,42 @@
+#!/bin/bash
+
+export STOLONCTL_CLUSTER_NAME={{ stolon_cluster_name }}
+export STOLONCTL_STORE_BACKEND={{ stolon_store_backend }}
+export STOLONCTL_STORE_ENDPOINTS={{ stolon_store_endpoints }}
+export PATH=$PATH:{{ stolon_unarchive_prefix }}/bin
+export STOLONCTL_INIT_MODE={{ stolon_init_mode }}
+
+{% if stolon_init_mode == "new" %}
+if [ xINIT == x$1 ]
+  then
+    stolonctl init -y && \
+    exit 0
+
+    exit 1
+fi
+{% endif %} 
+
+{% if stolon_init_mode == "existing" %}
+if [ xPASS == x$1 ]
+  then
+    PG_BIN=/usr/pgsql-{{ postgresql_version }}/bin
+    PG_DATA=/var/lib/pgsql/{{ postgresql_version }}/postgres
+    PASS=`head -1 {{ stolon_su_passwordfile }}`
+
+    sed  -i '1i local postgres postgres trust' $PG_DATA/pg_hba.conf && \
+    sudo -u postgres $PG_BIN/pg_ctl reload -D $PG_DATA && \
+    printf "sudo -u postgres $PG_BIN/psql -h /tmp -p {{ stolon_postgres_port }} -c \"ALTER USER postgres PASSWORD '%s';\"" "$PASS" | bash && \
+    exit 0
+
+    exit 1
+fi
+
+if [ xINIT == x$1 ]
+  then
+    stolonctl init -y '{ "initMode": "existing", "existingConfig": { "keeperUID": "pg{{ stolon_init_uid }}" } }' && \
+    exit 0
+
+    exit 1
+fi
+{% endif %}
+

@@ -1,0 +1,21 @@
+- name: Create stolon-sentinel user
+  user:
+      name: "{{ stolon_sentinel_user }}"
+      home: "/home/{{ stolon_sentinel_user }}"
+      state: present
+      group: postgres
+
+- name: Change user dir permissions
+  file: 
+      path: "/home/{{ stolon_sentinel_user }}"
+      state: directory
+      mode: 0750
+      group: postgres
+
+- name: Create pass file
+  template: 
+      src: pass.j2
+      dest: "{{ stolon_pgpassfile }}"
+      mode: 0440
+      group: postgres
+

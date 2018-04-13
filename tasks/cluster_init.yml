@@ -1,0 +1,32 @@
+- name: Template for init shell script
+  template:
+      src: cluster_init_command.sh.j2
+      dest: /tmp/cluster_init_command.sh
+      mode: 0555
+
+- name: Init command
+  command: /tmp/cluster_init_command.sh INIT
+  register: clu_init
+
+- debug: msg="{{ clu_init.stdout }}"
+
+- debug: msg="{{ clu_init.stderr }}"
+
+- block:
+    - name: Wait for postgres start
+      wait_for:
+        host: "{{ stolon_postgres_listen }}"
+        port: "{{ stolon_postgres_port }}"
+        state: started
+        timeout: 300
+        delay: 5
+        sleep: 5
+
+    - name: Hard code postgres password change
+      command: /tmp/cluster_init_command.sh PASS
+      register: clu_init
+
+    - debug: msg="{{ clu_init.stdout }}"
+
+    - debug: msg="{{ clu_init.stderr }}"
+  when: stolon_init_mode == "existing"
