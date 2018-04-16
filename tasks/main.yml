@@ -8,3 +8,4 @@
 - import_tasks: cluster_init.yml
   when: stolon_init and stolon_init_uid == inventory_hostname
 
+- import_tasks: env.yml

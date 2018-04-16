@@ -12,10 +12,17 @@
       mode: 0750
       group: postgres
 
-- name: Create pass file
+- name: Create postgres pass file
   template: 
-      src: pass.j2
-      dest: "{{ stolon_pgpassfile }}"
+      src: postgres.pf.j2
+      dest: "{{ stolon_su_passwordfile }}"
+      mode: 0440
+      group: postgres
+
+- name: Create replication pass file
+  template: 
+      src: replication.pf.j2
+      dest: "{{ stolon_repl_passwordfile }}"
       mode: 0440
       group: postgres
 

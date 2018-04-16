@@ -11,7 +11,7 @@ Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/u
 Environment="STKEEPER_CLUSTER_NAME={{ stolon_cluster_name }}"
 Environment="STKEEPER_STORE_BACKEND={{ stolon_store_backend }}"
 Environment="STKEEPER_STORE_ENDPOINTS={{ stolon_store_endpoints }}"
-Environment="STKEEPER_UID=pg{{ inventory_hostname.split('.')[0] }}" #Take shortname
+Environment="STKEEPER_UID=pg{{ inventory_hostname_short }}" #Take shortname
 Environment="STKEEPER_DATA_DIR=/var/lib/pgsql/{{ postgresql_version }}"
 Environment="STKEEPER_PG_LISTEN_ADDRESS={{ stolon_postgres_listen }}"
 Environment="STKEEPER_PG_PORT={{ stolon_postgres_port }}"

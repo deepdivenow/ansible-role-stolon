@@ -6,15 +6,17 @@ stolon_store_endpoints: http://{{ inventory_hostname }}:2379
 stolon_cluster_name: pg-stolon
 #etcd_cluster_group_name: etcd
 stolon_sentinel_user: stolon
-stolon_pgpassfile: /home/{{ stolon_sentinel_user }}/stolon_pgpassfile
+#stolon_pgpassfile: /home/{{ stolon_sentinel_user }}/stolon_pgpassfile
 stolon_remoteinstanceport: 5432
 stolon_proxy_listen: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 stolon_proxy_port: 25432
 stolon_postgres_listen: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 stolon_postgres_port: 5432
-stolon_replication_user: postgres
-stolon_repl_passwordfile: "{{ stolon_pgpassfile }}"
-stolon_su_passwordfile: "{{ stolon_pgpassfile }}"
+stolon_replication_user: replication
+stolon_repl_passwordfile: "/home/{{ stolon_sentinel_user }}/stolon_replication.pf"
+stolon_su_passwordfile: "/home/{{ stolon_sentinel_user }}/stolon_postgres.pf"
+stolon_postgres_password: Kuux5cuo
+stolon_replication_password: Aexaix1E
 postgresql_version: 9.5
 
 ## Very DANGEROUS option
